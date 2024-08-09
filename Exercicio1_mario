@@ -5,7 +5,7 @@ int main(void)
 {
     int tam;
 
-    // Adiciona o tamanho da piramide a variavel tam
+    // Adiciona o tamanho da piramide á variavel tam
     do
     {
         tam = get_int("Tamanho da piramide: ");
