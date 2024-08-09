@@ -1,0 +1,31 @@
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int tam;
+
+    // Adiciona o tamanho da piramide a variavel tam
+    do
+    {
+        tam = get_int("Tamanho da piramide: ");
+    }
+    while (tam < 1 || tam > 8);
+
+    // repete todo o ciclo enquanto i for menor que a variavel tam
+    for (int i = 0; i < tam; i++)
+    {
+        // imprime espaços enquanto a variavel pontos for maior que i + 1
+        for (int pontos = tam; pontos > i + 1; pontos--)
+        {
+            printf(" ");
+        }
+
+        // imprime # na tela enquanto p for menor que a variavel i
+        for (int p = 0; p < i + 1; p++)
+        {
+            printf("#");
+        }
+        printf("\n");
+    }
+}
