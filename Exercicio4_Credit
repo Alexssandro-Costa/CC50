@@ -1,0 +1,135 @@
+#include <cs50.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Usa o algoritmo de luhn para somar todos os numeros de um cartão
+int validar_numero(long int numero_cartao);
+
+// verifica se o cartão é valido
+void validar_cartao(long int numero);
+
+// verifica qual o banco do  cartão
+void tipo_cartao(long int numero);
+
+int main(void)
+{
+    long int numero;
+
+    do
+    {
+        // pede o numero do cartão
+        printf("-----------------------------------------\n");
+        numero = get_long("Digite o número do cartão: ");
+        printf("-----------------------------------------\n");
+
+        // Verifica se o numero digitado tem entre 12 a 16 digitos
+        char numero_valido[19];
+        snprintf(numero_valido, sizeof(numero_valido), "%li", numero);
+        if (strlen(numero_valido) < 12 || strlen(numero_valido) > 17)
+        {
+            printf("Numero Invalido! \nTente Novamente.\n");
+            numero = -1;
+        }
+    }
+    while (numero < 0);
+
+    // limpa a tela
+    system("clear");
+
+    // printa o resultado final
+    printf("\n-----------------------------------------------------------\n");
+    validar_cartao(numero);
+    printf("-------------------------------------------------------------\n");
+}
+
+// verifica se o cartão é valido
+int validar_numero(long int numero_cartao)
+{
+    int soma = 0;
+
+    for (int i = 1; i < 18; i++)
+    {
+        // pega do penultimo numero em diante pulando de 2 em 2
+        if (i % 2 == 0)
+        {
+            // pega um numero valido é o multiplica por 2
+            int multi_valor = (numero_cartao % 10) * 2;
+
+            // aciona se o valor multiplicado for maior que 10
+            if (multi_valor >= 10)
+            {
+                /*  quebra a variavel multi_valor em dois numeros diferentes e os adiciona a
+                   variavel soma
+                */
+                int quebra_valor = multi_valor % 10;
+                soma += quebra_valor;
+
+                // apaga o valor adicionado a variavel quebra_valor
+                multi_valor = multi_valor / 10;
+            }
+            // adiciona o valor que sobrou a variavel soma
+            soma += multi_valor;
+        }
+        // pega do ultimo numero em diante, pulando de 2 em 2
+        else
+        {
+            // adicona o valor a variavel soma
+            soma = soma + (numero_cartao % 10);
+        }
+        // apaga o ultimo valor a cada ciclo
+        numero_cartao = numero_cartao / 10;
+    }
+    // retorna o ultimo digite do resultado da soma
+    int ultimo_numero = soma % 10;
+    return ultimo_numero;
+};
+
+void tipo_cartao(long int numero)
+{
+    char visa = '4';
+    char amex[3] = {'3', '4', '7'};
+    char master_card[6] = {'5', '4', '3', '2', '1'};
+
+    // adiciona os dois primeiros numeros do cartão em um array
+    char cartao[16];
+    snprintf(cartao, sizeof(cartao), "%li", numero);
+
+    // verifica a qual banco o cartão pertence
+    if (cartao[0] == amex[0] && (cartao[1] == amex[1] || cartao[1] == amex[2]))
+    {
+        printf("Cartão America Express de numero: %li\n", numero);
+    }
+    else if (cartao[0] == visa)
+    {
+        printf("Cartão Visa de numero: %li\n", numero);
+    }
+    else if (cartao[0] == master_card[0] &&
+             (cartao[1] == master_card[0] || cartao[1] == master_card[1] ||
+              cartao[1] == master_card[2] || cartao[1] == master_card[3] ||
+              cartao[1] == master_card[4]))
+    {
+        printf("Cartão MasterCard de numero: %li\n", numero);
+    }
+    else
+    {
+        printf("Não foi possivel definir a qual Banco o cartão pertence.\n");
+    }
+};
+
+// verifica se o cartão é valido
+void validar_cartao(long int numero)
+{
+    int ultimo = validar_numero(numero);
+
+    // se o ultimo digito da soma for zero, o cartão é valido
+    if (ultimo == 0)
+    {
+        tipo_cartao(numero);
+    }
+    // se o ultimo digito da soma for diferente de 0, então é invalido
+    else
+    {
+        printf("Numero de cartão invalido!\n");
+    }
+};
